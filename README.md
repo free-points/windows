@@ -1,4 +1,4 @@
-# windows
+# Windows
 WEEK 1
 Day 1: I prayed to Jeff and got 0 points, will try again tomorrow
 Day 2: I prayed to Jeff and got 0 points, will try again tomorrow
