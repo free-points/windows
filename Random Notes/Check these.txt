@@ -1,0 +1,24 @@
+task scheduler
+event viewer
+group policy
+windows temp file permissions
+smb encryption
+power user group
+
+https://gist.github.com/mackwage/08604751462126599d7e52f233490efe
+
+
+
+:: General OS hardening
+:: Disables DNS multicast, smbv1, netbios, powershellv2
+:: Enables UAC
+:: ---------------------
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v EnableMulticast /t REG_DWORD /d 1 /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v SMB1 /t REG_DWORD /d 0 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 1 /f
+net stop WinRM
+wmic /interactive:off nicconfig where TcpipNetbiosOptions=1 call SetTcpipNetbios 2
+powershell.exe Disable-WindowsOptionalFeature -Online -FeatureName smb1protocol -norestart
+powershell.exe Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2 -norestart
+powershell.exe Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root -norestart
+

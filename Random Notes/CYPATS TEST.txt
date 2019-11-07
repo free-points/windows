@@ -1,0 +1,40 @@
+text_file = open("filename.dat", "r")
+lines = text_file.readlines()
+print lines
+print len(lines)
+text_file.close()
+
+^one big array
+
+lines = text_file.read().split(',')
+
+
+^converting text files to python arrays (substitute for what or just add, if so where?)
+
+
+
+net user ________ *
+
+__=username
+^change passwords
+
+
+
+
+are accounts with elevated perms automatically in administrators group????
+
+how to make .bat (or .py) type into password box??
+
+
+
+$users = ForEach ($user in $(Get-LocalUser)) {
+
+    Get-AdUser $user -Properties Department,Mail
+        
+}
+
+Set-LocalUser-Password @132aBc@!
+
+
+wmic /output:C:\Users\Work\Desktop\useraccounts.txt useraccount get name
+
