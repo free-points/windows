@@ -1,0 +1,30 @@
+Remove Enable LMhosts lookup.
+Disable NetBIOS over TCP/IP.
+Remove ncacn_ip_tcp.*
+Configure registry permissions.
+Protect the registry from anonymous access. 
+Disallow remote registry access if not required.
+Set MaxCachedSockets (REG_DWORD) to 0.*
+Set SmbDeviceEnabled (REG_DWORD) to 0.
+Set AutoShareServer to 0.
+Set AutoShareWks to 0.
+
+https://www.dslreports.com/forum/remark,8586160
+
+
+Delete all value data INSIDE the NullSessionPipes key.
+Delete all value data INSIDE the NullSessionShares key.
+
+
+1)ask tony about bitlocker bypass
+2) http://support.homeawaysoftware.com/articles/en_US/Article/HASW-Check-or-Change-User-Account-Control-UAC-Status?category=Errors&subdir=propertyplus
+
+
+task scheduler
+event viewer
+group policy
+windows temp file permissions
+smb encryption
+power user group
+
+https://gist.github.com/mackwage/08604751462126599d7e52f233490efe
