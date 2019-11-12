@@ -83,6 +83,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v EnableMultica
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v SMB1 /t REG_DWORD /d 0 /f
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 1 /f
 net stop WinRM
+
 wmic /interactive:off nicconfig where TcpipNetbiosOptions=1 call SetTcpipNetbios 2
 powershell.exe Disable-WindowsOptionalFeature -Online -FeatureName smb1protocol -norestart
 powershell.exe Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2 -norestart
@@ -91,6 +92,10 @@ echo Disabled DNS multicast, smbv1, netbios, powershellv2, Enables UAC
 
 wmic /OUTPUT:E:\UserScripts\UsersAU.txt useraccount get name
 echo UsersAU.txt created
+
+echo INSTALLING WINDOWS UPDATES. 
+echo PLEASE STAND BY FOR UPGRADE TRANSMISSION.
+UsoClient ScanInstallWait
 
 pause
 net user
