@@ -75,6 +75,63 @@ reg add "HKCU\Software\Microsoft\Office\16.0\Word\Options" /v DontUpdateLinks /t
 reg add "HKCU\Software\Microsoft\Office\16.0\Word\Options\WordMail" /v DontUpdateLinks /t REG_DWORD /d 00000001 /f
 echo Microsoft Office Secured
 
+echo. & echo Configuring UAC
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /V PromptOnSecureDesktop /T REG_DWORD /D 1 /F >> nul 2>&1
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /V ConsentPromptBehaviorAdmin /T REG_DWORD /D 1 /F >> nul 2>&1
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /V ConsentPromptBehaviorUser /T REG_DWORD /D 0 /F >> nul 2>&1
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /V FilterAdministratorToken /T REG_DWORD /D 1 /F >> nul 2>&1
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /V EnableInstallerDetection /T REG_DWORD /D 1 /F >> nul 2>&1
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /V EnableLUA /T REG_DWORD /D 1 /F >> nul 2>&1
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /V EnableVirtualization /T REG_DWORD /D 1 /F >> nul 2>&1
+echo. & echo UAC configured
+
+echo. & echo Configuring services
+
+REM Services that should be burned at the stake.
+for %%S in (tapisrv,bthserv,mcx2svc,remoteregistry,seclogon,telnet,tlntsvr,p2pimsvc,simptcp,fax,msftpsvc,nettcpportsharing,iphlpsvc,lfsvc,bthhfsrv,irmon,sharedaccess,xblauthmanager,xblgamesave,xboxnetapisvc) do (
+	sc config %%S start= disabled >> nul 2>&1
+	sc stop %%S >> nul 2>&1
+)
+
+REM Services that are an automatic start.
+for %%S in (eventlog,mpssvc) do (
+	sc config %%S start= auto >> nul 2>&1
+	sc start %%S >> nul 2>&1
+)
+
+REM Services that are an automatic (delayed) start.
+for %%S in (windefend,sppsvc,wuauserv) do (
+	sc config %%S start= delayed-auto >> nul 2>&1
+	sc start %%S >> nul 2>&1
+)
+
+REM Services that are a manual start.
+for %%S in (wersvc,wecsvc) do (
+	sc config %%S start= demand >> nul 2>&1
+)
+
+echo. & echo Services configured.
+
+echo. & echo Deleting Windows Shares
+
+REG QUERY HKLM\System\CurrentControlSet\Services\LanmanServer\Shares > %APPDATA%\shares.txt
+
+findstr /I /V HKEY_LOCAL_MACHINE %APPDATA%\shares.txt | findstr /I /V HKLM >> %APPDATA%\shares2.txt
+
+setlocal EnableDelayedExpansion
+for /F "usebackq delims=" %%S in ("%APPDATA%\shares2.txt") do (
+    set "tempy=%%S"
+	REM Grabs the first section in the line deliniated by 4 spaces.
+    for /F "tokens=1 delims=|" %%N in ("!tempy:    =|!") do (
+        net share "%%N" /Delete >> nul 2>&1
+    )
+)
+endlocal
+
+del %APPDATA%\shares.txt & del %APPDATA%\shares2.txt
+
+echo. & echo Windows Shares deleted.
+
 net stop WinRM
 sc config WinRM start= disabled
 echo Windows Remote Management service stopped and disabled
